@@ -1,0 +1,3 @@
+[submodule "python-telgram-bot"]
+	path = python-telgram-bot
+	url = https://github.com/DDijj/python-telegram-bot.git
