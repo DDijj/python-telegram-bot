@@ -19,9 +19,12 @@
   // Update the lock files:
   "lockFileMaintenance": {
     "enabled": true,
-    "schedule": ["* * * * 1,4"],  // Run sometime on Monday and Thursday
+    "schedule": ["* 0-3 1 * *"],  // https://docs.renovatebot.com/presets-schedule/#schedulemonthly
     "automerge": true
   },
+
+  // Enable automerge globally:
+  "automerge": true,
 
   // Group package updates together:
   "packageRules": [
@@ -47,17 +50,29 @@
       "matchPackageNames": ["chango", "Bibo-Joshi/chango"],
       "groupName": "Chango"
     },
-    // Automerge PR's for minor/patch/pin/digest (except major) updates:
+
+    // Don't automerge major updates for project dependencies:
     {
-      "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
-      "automerge": true
+      "matchUpdateTypes": ["major"],
+      "matchDepTypes": ["project.dependencies", "project.optional-dependencies"],
+      "automerge": false
     },
 
-    // Apply the "dependencies" label to all updates of optional-dependencies:
+    // Apply the "dependencies" label to all updates of optional/required dependencies:
     {
-      "matchDepTypes": ["project.optional-dependencies"],
-      "automerge": false,
+      "matchDepTypes": ["project.optional-dependencies", "project.dependencies"],
       "labels": ["⚙️ dependencies"]
+    },
+
+    // Workflow and dev-dependencies update once a month
+    // https://docs.renovatebot.com/presets-schedule/#schedulemonthly
+    {
+      "matchFileNames": [".github/workflows/**"],
+      "schedule": ["* 0-3 1 * *"]
+    },
+    {
+      "matchDepTypes": ["dependency-groups"],
+      "schedule": ["* 0-3 1 * *"]
     }
   ],
 
@@ -68,6 +83,6 @@
   "ignoreDeps": ["pytest-asyncio"],
 
   // schedule to allow PR's from Renovate:
-  "schedule": ["* * * * 0,6"]  // Every weekend
+  "schedule": ["* * * * 0"]  // Every Sunday
 
 }
